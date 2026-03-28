@@ -1,0 +1,44 @@
+trigger:
+- main
+
+pool:
+  name: 'Default'
+
+variables:
+  - group: piano-app-secrets 
+
+stages:
+- stage: QA_Automation
+  jobs:
+  - job: Run_Tests
+    steps:
+    # 1. Install Flask (Python)
+    - script: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+      displayName: '1. Install Flask App Deps'
+
+    # 2. Install Playwright (Node/TypeScript)
+    - script: |
+        npm install
+        npx playwright install --with-deps
+      displayName: '2. Install Playwright Deps'
+
+    # 3. Start App & Run TypeScript Tests
+    - script: |
+        start /B python app.py
+        ping 127.0.0.1 -n 10 > nul
+        npx playwright test --reporter=junit,line
+      displayName: '3. Run Flask & Playwright TS Tests'
+      env:
+        DB_PASSWORD: $(DB_PASSWORD)
+        PYTHONUTF8: 1
+        PLAYWRIGHT_JUNIT_OUTPUT_NAME: results.xml
+
+    # 4. Show the Results in Azure DevOps Dashboard
+    - task: PublishTestResults@2
+      displayName: '4. Publish Test Report'
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFiles: '**/results.xml'
+        testRunTitle: 'Playwright TypeScript Report'

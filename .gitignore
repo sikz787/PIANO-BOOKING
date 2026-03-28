@@ -1,0 +1,21 @@
+
+# Playwright
+node_modules/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+# Ignore Terraform local files
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+
+# Ignore Python cache
+__pycache__/
+*.pyc
+
+# Ignore Node/Playwright folders
+node_modules/
+test-results/

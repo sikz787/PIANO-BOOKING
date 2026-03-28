@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Piano Studio | Full Registration</title>
+    <style>
+        body { background-color: #2e004f; color: #f1c40f; font-family: 'Segoe UI', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 20px 0; }
+        .card { background: #3d0066; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); width: 400px; border: 2px solid #f1c40f; }
+        h1 { text-align: center; margin-bottom: 5px; }
+        p { text-align: center; font-size: 0.9em; margin-bottom: 20px; }
+        label { display: block; margin-top: 15px; font-weight: bold; font-size: 0.8em; text-transform: uppercase; }
+        input, select { width: 100%; padding: 10px; margin-top: 5px; border-radius: 5px; border: 1px solid #f1c40f; background: #2e004f; color: white; box-sizing: border-box; }
+        .radio-group { display: flex; gap: 15px; margin-top: 10px; }
+        .radio-group label { text-transform: none; margin-top: 0; font-weight: normal; }
+        button { background-color: #f1c40f; color: #2e004f; border: none; padding: 15px; border-radius: 5px; font-weight: bold; cursor: pointer; width: 100%; font-size: 16px; margin-top: 25px; transition: 0.3s; }
+        button:hover { background-color: #d4ac0d; transform: scale(1.02); }
+        #status { margin-top: 20px; text-align: center; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🎹 Piano Masterclass</h1>
+        <p>Complete your student profile</p>
+        
+        <label>Full Name</label>
+        <input type="text" id="name" placeholder="Enter name">
+
+        <label>Email Address</label>
+        <input type="email" id="email" placeholder="email@example.com">
+
+        <label>Gender</label>
+        <div class="radio-group">
+            <input type="radio" name="gender" value="Male" id="m" style="width: auto;"><label for="m">Male</label>
+            <input type="radio" name="gender" value="Female" id="f" style="width: auto;"><label for="f">Female</label>
+        </div>
+
+        <label>Preferred Lesson Day</label>
+        <select id="day">
+            <option>Monday</option>
+            <option>Wednesday</option>
+            <option>Friday</option>
+            <option>Saturday</option>
+        </select>
+
+        <label>Start Date</label>
+        <input type="date" id="start_date">
+
+        <button onclick="bookSession()">REGISTER NOW</button>
+        <div id="status"></div>
+    </div>
+
+    <script>
+        function bookSession() {
+            const status = document.getElementById('status');
+            const gender = document.querySelector('input[name="gender"]:checked')?.value;
+            
+            const data = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                gender: gender,
+                day: document.getElementById('day').value,
+                start_date: document.getElementById('start_date').value
+            };
+            
+            status.innerText = "Saving profile...";
+            fetch('/book', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+            .then(res => res.text())
+            .then(msg => { status.innerText = msg; })
+            .catch(err => { status.innerText = "Connection Error."; });
+        }
+    </script>
+</body>
+</html>
