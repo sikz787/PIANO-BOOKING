@@ -42,3 +42,23 @@ stages:
       inputs:
         testResultsFiles: '**/results.xml'
         testRunTitle: 'Playwright TypeScript Report'
+
+        # ... (Keep your Trigger, Pool, and QA_Automation stage from before)
+
+- stage: Deploy_Infrastructure
+  displayName: 'Deploy to Azure'
+  dependsOn: QA_Automation
+  condition: succeeded()
+  jobs:
+  - job: Terraform_Deploy
+    steps:
+    # 1. Initialize Terraform
+    - script: |
+        terraform init
+        terraform apply -auto-approve
+      displayName: 'Terraform Init and Apply'
+      env:
+        ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+        ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+        ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+        ARM_TENANT_ID: $(ARM_TENANT_ID)

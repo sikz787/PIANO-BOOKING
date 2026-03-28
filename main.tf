@@ -153,3 +153,16 @@ output "public_ip" {
   value = azurerm_public_ip.public_ip.ip_address
 }
 
+# Allow Azure Services (like your VM/App) to talk to the SQL Server
+resource "azurerm_mssql_firewall_rule" "allow_azure_services" {
+  name             = "AllowAzureServices"
+  server_id        = azurerm_mssql_server.sql_server.id
+  start_ip_address = "0.0.0.0"
+  end_ip_address   = "0.0.0.0"
+}
+
+# Output the new server name so we don't have to guess it
+output "sql_server_fqdn" {
+  value = azurerm_mssql_server.sql_server.fully_qualified_domain_name
+}
+

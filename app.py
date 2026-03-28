@@ -1,6 +1,6 @@
 import sys
 import io
-
+# Portfolio Sync Test - March 2026
 # Force stdout to use UTF-8 so emojis don't crash the console
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
@@ -15,29 +15,33 @@ import sqlite3
 app = Flask(__name__)
 
 # --- DATABASE LOGIC ---
+import os
+
 def get_db_connection():
-    # 1. Try Azure SQL First
-    try:
-        # We use your existing connection string
-        conn_str = (
-            "Driver={ODBC Driver 18 for SQL Server};"
-            "Server=tcp:piano-db-server-44288.database.windows.net,1433;"
-            "Database=pianobookings;"
-            "Uid=dbadmin;"
-            "Pwd=YourPassword123!;" # Ensure this matches your secret if using Variables
-            "Encrypt=yes;"
-            "TrustServerCertificate=yes;"
-            "Connection Timeout=5;" # Short timeout so tests don't hang
-        )
-        return pyodbc.connect(conn_str)
-    except Exception:
-        # 2. FALLBACK: Use SQLite for Testing
-        print("⚠️ Azure DB not found. Using local SQLite for this test run...")
-        conn = sqlite3.connect('local_test.db')
-        # Create the table if it doesn't exist in the local file
-        conn.execute('''CREATE TABLE IF NOT EXISTS bookings 
-                        (name TEXT, email TEXT, gender TEXT, day TEXT, start_date TEXT)''')
-        return conn
+    # It will now look for 'DB_SERVER' which we will set in Azure
+    server = os.getenv('DB_SERVER')
+    
+    if server:
+        try:
+            conn_str = (
+                f"Driver={{ODBC Driver 18 for SQL Server}};"
+                f"Server=tcp:{server},1433;"
+                "Database=pianobookings;"
+                "Uid=dbadmin;"
+                "Pwd=YourPassword123!;" # Match your Terraform password
+                "Encrypt=yes;"
+                "TrustServerCertificate=yes;"
+                "Connection Timeout=30;"
+            )
+            return pyodbc.connect(conn_str)
+        except Exception as e:
+            print(f"Cloud DB connection failed: {e}")
+    
+    # FALLBACK to SQLite (for local testing/pipeline QA)
+    print("Using local SQLite...")
+    conn = sqlite3.connect('local_test.db')
+    conn.execute('CREATE TABLE IF NOT EXISTS bookings (name TEXT, email TEXT, gender TEXT, day TEXT, start_date TEXT)')
+    return conn
 
 @app.route('/')
 def home():
