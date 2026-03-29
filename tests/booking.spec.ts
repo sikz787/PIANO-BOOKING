@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { BookingPage } from './pages/BookingPage';
 
+//This is the first test.
 test('Verify successful piano booking', async ({ page }) => {
     const booking = new BookingPage(page);
 
