@@ -24,11 +24,11 @@ def get_db_connection():
     if server:
         try:
             conn_str = (
-                f"Driver={{ODBC Driver 18 for SQL Server}};"
+                f"Driver={FreeTDS} or Driver={ODBC Driver 17 for SQL Server}};"
                 f"Server=tcp:{server},1433;"
                 "Database=pianobookings;"
                 "Uid=dbadmin;"
-                "Pwd=YourPassword123!;" # Match your Terraform password
+                "Pwd=YourPassword123!;"
                 "Encrypt=yes;"
                 "TrustServerCertificate=yes;"
                 "Connection Timeout=30;"
