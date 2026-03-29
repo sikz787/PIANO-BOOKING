@@ -29,10 +29,12 @@ export default defineConfig({
     trace: 'on-first-retry',
 },
 webServer: {
-    command: 'python app.py',        // The command to start your backend
-    url: 'http://127.0.0.1:5000',
-    reuseExistingServer: !process.env.CI,
-    timeout: 120 * 1000,             // Give it time to start
+  command: 'python app.py', // Make sure this says 'python' or 'python3'
+  url: 'http://127.0.0.1:5000',
+  reuseExistingServer: !process.env.CI,
+  stdout: 'pipe',
+  stderr: 'pipe',
+  timeout: 120 * 1000,             // Give it time to start
 },
   /* Configure projects for major browsers */
   projects: [
