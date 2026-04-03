@@ -23,17 +23,18 @@ def get_db_connection():
     
     if server:
         try:
-            conn_str = (
-                f"Driver={FreeTDS} or Driver={ODBC Driver 17 for SQL Server}};"
-                f"Server=tcp:{server},1433;"
-                "Database=pianobookings;"
-                "Uid=dbadmin;"
-                "Pwd=YourPassword123!;"
-                "Encrypt=yes;"
-                "TrustServerCertificate=yes;"
-                "Connection Timeout=30;"
-            )
-            return pyodbc.connect(conn_str)
+        # We use ODBC Driver 18 because it is the standard on Azure App Service Linux
+         conn_str = (
+            "Driver={ODBC Driver 18 for SQL Server};"
+            f"Server=tcp:{server},1433;"
+            "Database=pianobookings;"
+            "Uid=dbadmin;"
+            "Pwd=YourPassword123!;"
+            "Encrypt=yes;"
+            "TrustServerCertificate=yes;"
+            "Connection Timeout=30;"
+        )
+         return pyodbc.connect(conn_str)
         except Exception as e:
             print(f"Cloud DB connection failed: {e}")
     
