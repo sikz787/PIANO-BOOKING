@@ -12,7 +12,7 @@ stages:
   jobs:
   - job: Run_Tests
     steps:
-    # 1. Using native powershell for Python
+    # 1. Using native powershell for Python installed 
     - powershell: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
