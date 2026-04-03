@@ -1,5 +1,3 @@
 flask
 flask-cors
 gunicorn
-pyodbc==5.1.0
-playwright==1.42.0
